@@ -6,7 +6,7 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from .models import CustomUser
 from .serializers import CustomUserSerializer, LoginSerializer
-from employer_profiles.models import EmployerProfile
+
 
 class AuthViewSet(viewsets):
     queryset = CustomUser.objects.all()
