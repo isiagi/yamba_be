@@ -8,7 +8,7 @@ from .models import CustomUser
 from .serializers import CustomUserSerializer, LoginSerializer
 
 
-class AuthViewSet(viewsets):
+class AuthViewSet(viewsets.ModelViewSet):  # Added ModelViewSet
     queryset = CustomUser.objects.all()
     
     def get_serializer_class(self):
@@ -21,16 +21,7 @@ class AuthViewSet(viewsets):
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         
-        user = authenticate(
-            username=serializer.validated_data['username'],
-            password=serializer.validated_data['password']
-        )
-        
-        if not user:
-            return Response(
-                {'error': 'Invalid credentials'}, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        user = serializer.validated_data['user']  # Use the user from serializer validation
         
         token, _ = Token.objects.get_or_create(user=user)
         
@@ -38,8 +29,6 @@ class AuthViewSet(viewsets):
             'token': token.key,
             'user_id': user.id,
             'username': user.username,
-            # 'is_employer': user.is_employer,
-            # 'is_applicant': user.is_applicant,
             'email': user.email
         })
 
@@ -48,20 +37,13 @@ class AuthViewSet(viewsets):
         serializer = CustomUserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         
-        # Check if user exists
+        # Check if user exists (this is already handled in serializer, but keeping for safety)
         if CustomUser.objects.filter(email=serializer.validated_data['email']).exists():
             return Response(
                 {'error': 'User with this email already exists'},
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        # If is_employer is True, is_applicant should be False, create employer profile
-        # if serializer.validated_data['is_employer']:
-        #     # serializer.validated_data['is_applicant'] = False
-        #     # create employer profile
-        #     EmployerProfile.objects.create(user=serializer.save())
-
-
         user = serializer.save()
         token, _ = Token.objects.get_or_create(user=user)
         
@@ -69,8 +51,6 @@ class AuthViewSet(viewsets):
             'token': token.key,
             'user_id': user.id,
             'username': user.username,
-            # 'is_employer': user.is_employer,
-            # 'is_applicant': user.is_applicant,
             'email': user.email
         }, status=status.HTTP_201_CREATED)
 
@@ -84,13 +64,12 @@ class AuthViewSet(viewsets):
         return Response({
             'user_id': updated_user.id,
             'username': updated_user.username,
-            # 'is_employer': updated_user.is_employer,
-            # 'is_applicant': updated_user.is_applicant,
             'email': updated_user.email
         })
     
-    # logout
     @action(detail=False, methods=['post'])
     def logout(self, request):
-        request.user.auth_token.delete()
-        return Response({'message': 'Logged out successfully'})
+        if hasattr(request.user, 'auth_token'):
+            request.user.auth_token.delete()
+            return Response({'message': 'Logged out successfully'})
+        return Response({'error': 'No active session found'}, status=status.HTTP_400_BAD_REQUEST)

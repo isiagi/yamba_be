@@ -21,8 +21,9 @@ class CustomUserSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = [
             'id', 'username', 'email', 'password', 'first_name', 'last_name',
-            'seller_type', 'business_name', 'contact_phone', 'contact_email',
-            'address', 'is_paid_seller', 'profile_image'
+            'phone', 'bio', 'location', 'skills', 'experience_years',
+            'linkedin_url', 'github_url', 'portfolio_url', 'profile_picture',
+            'is_verified', 'created_at', 'updated_at'
         ]
         extra_kwargs = {
             'password': {'write_only': True},

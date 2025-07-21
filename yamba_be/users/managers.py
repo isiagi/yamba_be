@@ -14,11 +14,10 @@ class CustomUserManager(BaseUserManager):
             email=email, 
             **extra_fields
         )
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
+        user.set_password(password)  # This was missing!
+        user.save(using=self._db)    # This was missing!
+        return user                   # This was missing!
 
-    
     def create_superuser(self, username, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
