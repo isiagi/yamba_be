@@ -38,8 +38,8 @@ class AuthViewSet(viewsets):
             'token': token.key,
             'user_id': user.id,
             'username': user.username,
-            'is_employer': user.is_employer,
-            'is_applicant': user.is_applicant,
+            # 'is_employer': user.is_employer,
+            # 'is_applicant': user.is_applicant,
             'email': user.email
         })
 
@@ -69,8 +69,8 @@ class AuthViewSet(viewsets):
             'token': token.key,
             'user_id': user.id,
             'username': user.username,
-            'is_employer': user.is_employer,
-            'is_applicant': user.is_applicant,
+            # 'is_employer': user.is_employer,
+            # 'is_applicant': user.is_applicant,
             'email': user.email
         }, status=status.HTTP_201_CREATED)
 
@@ -84,8 +84,8 @@ class AuthViewSet(viewsets):
         return Response({
             'user_id': updated_user.id,
             'username': updated_user.username,
-            'is_employer': updated_user.is_employer,
-            'is_applicant': updated_user.is_applicant,
+            # 'is_employer': updated_user.is_employer,
+            # 'is_applicant': updated_user.is_applicant,
             'email': updated_user.email
         })
     

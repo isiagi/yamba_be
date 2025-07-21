@@ -1,5 +1,7 @@
 from django.db import models
 from users.models import CustomUser as User
+# timezone
+from django.utils import timezone
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -58,7 +60,7 @@ class Job(models.Model):
         ordering = ['-created_at']
     
     def __str__(self):
-        return f"{self.title} at {self.company.name}"
+        return f"{self.title}"
     
     @property
     def is_expired(self):
