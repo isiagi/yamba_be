@@ -67,3 +67,16 @@ class Job(models.Model):
         if self.application_deadline:
             return timezone.now() > self.application_deadline
         return False
+    
+
+class JobApplication(models.Model):
+    job = models.ForeignKey(Job, related_name='applications', on_delete=models.CASCADE)
+    applicant = models.ForeignKey(User, related_name='applications', on_delete=models.CASCADE)
+    cover_letter = models.TextField(blank=True)
+    resume = models.FileField(upload_to='resumes/', blank=True, null=True)
+    applied_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=50, default='pending')  # e.g., pending, accepted, rejected
+
+    def __str__(self):
+        return f"{self.applicant} applied to {self.job}"
+

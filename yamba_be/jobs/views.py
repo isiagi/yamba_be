@@ -37,8 +37,8 @@ class JobViewSet(viewsets.ModelViewSet):
     
     def perform_create(self, serializer):
         # Additional check to ensure only employers can post jobs
-        if self.request.user.user_type != 'employer':
-            raise PermissionError("Only employers can post jobs")
+        # if self.request.user.user_type != 'employer':
+        #     raise PermissionError("Only employers can post jobs")
         serializer.save(posted_by=self.request.user)
     
     # @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
