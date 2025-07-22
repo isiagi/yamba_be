@@ -10,6 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+from dotenv import load_dotenv
+load_dotenv()
+
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -94,6 +97,19 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# import dj_database_url
+# import os
+
+# # Log the DATABASE_URL (WARNING: this may contain credentials!)
+# print(f"DATABASE_URL: {os.getenv('DATABASE_URL')}")
+
+# DATABASES = {}
+# DATABASES['default'] = dj_database_url.config(
+#     default=os.getenv('DATABASE_URL', 'sqlite:///db.sqlite3'),
+#     conn_max_age=600,
+#     ssl_require=os.getenv('DATABASE_SSL', 'true').lower() == 'true'
+# )
 
 
 # Password validation
