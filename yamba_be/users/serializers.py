@@ -66,21 +66,25 @@ class CustomUserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({'username': 'This username is already taken.'})
 
 class LoginSerializer(serializers.Serializer):
-    username = serializers.CharField()
+    email = serializers.EmailField()
     password = serializers.CharField()
 
     def validate(self, attrs):
-        username = attrs.get('username')
+        email = attrs.get('email')
         password = attrs.get('password')
-        
-        if username and password:
-            # Normalize username before authentication
-            username = ' '.join(username.split())
-            user = authenticate(username=username, password=password)
-            if not user:
-                raise serializers.ValidationError('Invalid credentials')
-        else:
-            raise serializers.ValidationError('Missing username or password')
-        
+
+        if not email or not password:
+            raise serializers.ValidationError({'non_field_errors': ['Missing email or password']})
+
+        # `authenticate` uses USERNAME_FIELD under the hood, which is 'email' here
+        user = authenticate(username=email, password=password)
+
+        if not user:
+            raise serializers.ValidationError({'non_field_errors': ['Invalid credentials']})
+
+        if not user.is_active:
+            raise serializers.ValidationError({'non_field_errors': ['User account is disabled.']})
+
         attrs['user'] = user
         return attrs
+
